@@ -14,6 +14,29 @@
   <a href="{% url 'accounts:login' %}">giriş yapın</a>: iki form da görseldeki karakterleri sorar.
 </p>
 
+<h2>API</h2>
+<p>
+  Uçların tamamı <a href="{% url 'api-docs' %}">/api/docs/</a> adresindeki Swagger arayüzünde
+  denenebilir. Komut satırından:
+</p>
+<pre><code># 1) Captcha al (IP başına sınırlı)
+curl -X POST {{ request.scheme }}://{{ request.get_host }}/api/captcha/
+# → {"id": "…", "image_url": "…/captcha/….png", "expires_in": 180}
+
+# 2) Görseldeki karakterlerle kayıt ol
+curl -X POST {{ request.scheme }}://{{ request.get_host }}/api/register/ \
+  -H "Content-Type: application/json" \
+  -d '{"username": "ayse", "password": "…", "captcha_id": "…", "captcha_answer": "…"}'
+
+# 3) Yeni bir captcha ile token al, sonra profili oku
+curl -X POST {{ request.scheme }}://{{ request.get_host }}/api/token/ -H "Content-Type: application/json" \
+  -d '{"username": "ayse", "password": "…", "captcha_id": "…", "captcha_answer": "…"}'
+curl {{ request.scheme }}://{{ request.get_host }}/api/me/ -H "Authorization: Token …"</code></pre>
+<p>
+  Captcha hataları: <code>400</code> yanlış/boş, <code>404</code> bilinmeyen ya da kullanılmış,
+  <code>410</code> süresi dolmuş, <code>429</code> deneme hakkı bitti ya da çok fazla istek.
+</p>
+
 <h2>Nasıl çalışır?</h2>
 <ol>
   <li>Sunucu bir captcha üretir ve kimliğini (id) formda gizli alan olarak gönderir.</li>

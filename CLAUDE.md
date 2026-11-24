@@ -130,6 +130,12 @@ The owner connects the Render account; give them click-by-click steps.
   code + Turkish message + HTTP status; `DemoCaptchaField` uses it. `LoginForm.clean()`
   skips the password check when the captcha failed (no password oracle).
 - Rate limiting must NOT go on the manager: `CaptchaField` issues with `key="global"`, so
-  every page view would share one bucket. Session 3 applies a separate per-IP limiter in
-  the API view only.
+  every page view would share one bucket. The API applies a separate per-IP limiter.
+- **Session 3 — done** (PR `feat/api`). `captcha_demo/drf.py`: `CaptchaSerializerMixin`
+  verifies the captcha in `to_internal_value()` *before* other fields (no username
+  enumeration without a solved captcha); `CaptchaError` → 400/404/410/429 with
+  `{"detail", "code"}` + `Retry-After`. `build_backends()` returns storage + limiter
+  (memory, or Redis sharing one client and one bridge loop). Client IP via DRF
+  `get_ident()` with explicit `NUM_PROXIES` (`TRUSTED_PROXY_COUNT`). Swagger UI from
+  `drf-spectacular-sidecar` (no CDN). CI fails on OpenAPI schema warnings.
 - Dev machine: Windows, no Docker/Redis. Docker and Redis are verified in CI only.
