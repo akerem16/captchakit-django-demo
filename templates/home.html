@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>captchakit + Django demo</h1>
+<p>
+  Bu site, <a href="https://github.com/akerem16/captchakit">captchakit</a> kütüphanesinin
+  Django ve Django REST Framework ile nasıl kullanıldığını gösteren küçük bir örnek uygulamadır.
+  Kayıt ve giriş formları ile API uçları captcha ile korunur.
+</p>
+
+<h2>Nasıl çalışır?</h2>
+<ol>
+  <li>Sunucu bir captcha üretir ve kimliğini (id) formda gizli alan olarak gönderir.</li>
+  <li>Görsel <code>/captcha/&lt;id&gt;.png</code> adresinden yüklenir.</li>
+  <li>Form gönderilince cevap sunucuda doğrulanır; her captcha yalnızca bir kez kullanılabilir.</li>
+</ol>
+{% endblock %}

@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.4.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Lint
+        run: uv run ruff check .
+      - name: Format
+        run: uv run ruff format --check .
+      - name: Type check
+        run: uv run mypy
+      - name: Missing migrations
+        run: uv run python manage.py makemigrations --check --dry-run
+        env:
+          DJANGO_SECRET_KEY: ci-only-not-a-secret
+      - name: Tests (coverage >= 85%)
+        run: uv run pytest
+
+  redis:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 2s
+          --health-timeout 2s
+          --health-retries 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.4.0
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Redis integration tests
+        run: uv run pytest -m redis --no-cov
+        env:
+          TEST_REDIS_URL: redis://localhost:6379/0
+
+  compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build and start web + redis
+        run: docker compose up --build --detach
+      - name: Smoke test
+        run: |
+          for i in $(seq 1 30); do
+            if curl --fail --silent --output /dev/null http://localhost:8000/; then
+              break
+            fi
+            sleep 2
+          done
+          curl --fail --silent http://localhost:8000/ | grep captchakit
+          # issue() and get() run in two async_to_sync loops: exercises the Redis loop bridge.
+          for i in 1 2; do
+            docker compose exec -T -e DJANGO_SETTINGS_MODULE=config.settings web python -c "
+          import django; django.setup()
+          from asgiref.sync import async_to_sync
+          from captcha_demo.captcha import manager
+          cid, _ = async_to_sync(manager.issue)()
+          assert async_to_sync(manager.storage.get)(cid) is not None
+          print('issue + get ok', cid)
+          "
+          done
+      - name: Logs
+        if: always()
+        run: docker compose logs
