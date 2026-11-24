@@ -125,6 +125,11 @@ The owner connects the Render account; give them click-by-click steps.
     which also fixes the docs build broken by the 1.0.2 lock refresh).
   - CI green on the skeleton PR: checks, Redis integration (failure reproduced against real
     Redis, bridge works), Docker Compose smoke test.
-- **Next: session 2** — `accounts` app: register / login / logout / profile pages with
-  `CaptchaField`, form tests; add `accounts` back to coverage `source`.
+- **Session 2 — done** (PR `feat/accounts-pages`). `accounts` app: register / login /
+  logout (POST) / profile. `captcha_demo/errors.py` is the single mapping captcha outcome →
+  code + Turkish message + HTTP status; `DemoCaptchaField` uses it. `LoginForm.clean()`
+  skips the password check when the captcha failed (no password oracle).
+- Rate limiting must NOT go on the manager: `CaptchaField` issues with `key="global"`, so
+  every page view would share one bucket. Session 3 applies a separate per-IP limiter in
+  the API view only.
 - Dev machine: Windows, no Docker/Redis. Docker and Redis are verified in CI only.
