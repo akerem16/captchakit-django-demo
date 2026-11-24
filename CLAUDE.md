@@ -113,6 +113,13 @@ The owner connects the Render account; give them click-by-click steps.
     Also allowed Pillow 13 and refreshed vulnerable locked deps (pip-audit). Version 1.0.2
     prepared; **owner tags `v1.0.2` to publish to PyPI**. Until then the demo pins captchakit
     to the git commit via `[tool.uv.sources]`.
-  - Demo skeleton: see the session 1 PR.
-- Open question: does `redis.asyncio.Redis` break under `async_to_sync` across event loops?
-  Checked by the `redis`-marked test in CI (no Redis on the dev machine).
+  - Demo skeleton (PR `feat/skeleton`): uv project, env-based settings, home page, captcha
+    image route, Dockerfile + Compose (web + redis), CI (checks, Redis integration,
+    compose smoke test).
+  - `redis.asyncio` + `async_to_sync`: **confirmed broken**. Under WSGI each `async_to_sync`
+    call runs in a new, then closed, event loop; the second call on the same client raises
+    `RuntimeError: Event loop is closed`. Fix: `captcha_demo/loop_bridge.py`
+    (`LoopBridgedStorage` runs storage calls on one background loop). The rate limiter
+    (`RedisTokenBucket`) needs the same treatment in session 3.
+  - TODO: note this pitfall in captchakit's Django docs (`docs/adapters/django.md`).
+- Dev machine: Windows, no Docker/Redis. Docker and Redis are verified in CI only.
