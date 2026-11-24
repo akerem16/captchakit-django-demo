@@ -149,4 +149,13 @@ The owner connects the Render account; give them click-by-click steps.
   **Not stated by Render docs:** X-Forwarded-For order / hop count → `TRUSTED_PROXY_COUNT=1`
   is an assumption to verify after the first deploy. Render's generated secret is 44
   chars; Django's W009 heuristic wants ≥ 50 (entropy is 256 bits, so it is safe).
+- **Session 5 — done** (PR `docs/readme`). README (mermaid architecture + API sequence,
+  screenshot `docs/images/register.png` taken with headless Edge, setup, config, Render
+  notes), `docs/adr/001-redis.md`, LICENSE. captchakit README links the demo
+  (akerem16/captchakit#2).
+- **Owner TODO:** (1) tag captchakit `v1.0.2` (`git tag v1.0.2 40ca284 && git push origin
+  v1.0.2`) — the agent was not permitted to publish; then switch the demo to the PyPI
+  release (drop `[tool.uv.sources]`, `uv lock`, remove `git` from the Dockerfile).
+  (2) Connect Render (docs/deploy-render.md) and confirm the live URL in README.
+  (3) After deploy, verify `TRUSTED_PROXY_COUNT=1` (rate limit per real client IP).
 - Dev machine: Windows, no Docker/Redis. Docker and Redis are verified in CI only.
