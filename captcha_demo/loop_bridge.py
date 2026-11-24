@@ -46,16 +46,16 @@ class LoopBridgedStorage:
 
     def __init__(self, inner: Storage, loop: BackgroundLoop | None = None) -> None:
         self.inner = inner
-        self._loop = loop or BackgroundLoop()
+        self.loop = loop or BackgroundLoop()
 
     async def put(self, challenge: Challenge) -> None:
-        await self._loop.run(self.inner.put(challenge))
+        await self.loop.run(self.inner.put(challenge))
 
     async def get(self, challenge_id: str) -> Challenge | None:
-        return await self._loop.run(self.inner.get(challenge_id))
+        return await self.loop.run(self.inner.get(challenge_id))
 
     async def delete(self, challenge_id: str) -> None:
-        await self._loop.run(self.inner.delete(challenge_id))
+        await self.loop.run(self.inner.delete(challenge_id))
 
     async def incr_attempts(self, challenge_id: str) -> int:
-        return await self._loop.run(self.inner.incr_attempts(challenge_id))
+        return await self.loop.run(self.inner.incr_attempts(challenge_id))
