@@ -121,5 +121,10 @@ The owner connects the Render account; give them click-by-click steps.
     `RuntimeError: Event loop is closed`. Fix: `captcha_demo/loop_bridge.py`
     (`LoopBridgedStorage` runs storage calls on one background loop). The rate limiter
     (`RedisTokenBucket`) needs the same treatment in session 3.
-  - TODO: note this pitfall in captchakit's Django docs (`docs/adapters/django.md`).
+  - Pitfall documented in captchakit's `docs/adapters/django.md` (akerem16/captchakit#2,
+    which also fixes the docs build broken by the 1.0.2 lock refresh).
+  - CI green on the skeleton PR: checks, Redis integration (failure reproduced against real
+    Redis, bridge works), Docker Compose smoke test.
+- **Next: session 2** — `accounts` app: register / login / logout / profile pages with
+  `CaptchaField`, form tests; add `accounts` back to coverage `source`.
 - Dev machine: Windows, no Docker/Redis. Docker and Redis are verified in CI only.
