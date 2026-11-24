@@ -30,6 +30,10 @@ jobs:
         run: uv run python manage.py makemigrations --check --dry-run
         env:
           DJANGO_SECRET_KEY: ci-only-not-a-secret
+      - name: OpenAPI schema is valid and warning-free
+        run: uv run python manage.py spectacular --validate --fail-on-warn --file /tmp/schema.yml
+        env:
+          DJANGO_SECRET_KEY: ci-only-not-a-secret
       - name: Tests (coverage >= 85%)
         run: uv run pytest
 
