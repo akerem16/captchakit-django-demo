@@ -36,6 +36,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "drf_spectacular",
+    "drf_spectacular_sidecar",
     "captcha_demo",
     "accounts",
 ]
@@ -104,7 +108,34 @@ STORAGES = {
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.TokenAuthentication"],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.AllowAny"],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    # Client IP = the N-th address from the right of X-Forwarded-For. 0 = REMOTE_ADDR.
+    # Never leave it unset: DRF would then trust the whole, client-controlled header.
+    "NUM_PROXIES": int(os.environ.get("TRUSTED_PROXY_COUNT", "0")),
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "captchakit Django demo API",
+    "DESCRIPTION": (
+        "Captcha-protected registration and token login. Get a captcha with "
+        "`POST /api/captcha/`, show `image_url`, then send `captcha_id` and "
+        "`captcha_answer` with the request."
+    ),
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    # Serve Swagger UI from the drf-spectacular-sidecar package, not a CDN.
+    "SWAGGER_UI_DIST": "SIDECAR",
+    "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
+    "REDOC_DIST": "SIDECAR",
+}
+
 # captchakit
 REDIS_URL = os.environ.get("REDIS_URL", "")
 CAPTCHA_TTL = float(os.environ.get("CAPTCHA_TTL", "180"))
 CAPTCHA_MAX_ATTEMPTS = int(os.environ.get("CAPTCHA_MAX_ATTEMPTS", "3"))
+# POST /api/captcha/ token bucket per client IP: burst of 5, then one every 5 seconds.
+CAPTCHA_RATE_CAPACITY = float(os.environ.get("CAPTCHA_RATE_CAPACITY", "5"))
+CAPTCHA_RATE_REFILL = float(os.environ.get("CAPTCHA_RATE_REFILL", "0.2"))

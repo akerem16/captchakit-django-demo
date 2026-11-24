@@ -3,9 +3,10 @@ import os
 
 import pytest
 from asgiref.sync import async_to_sync
-from captchakit import Challenge, MemoryStorage
+from captchakit import Challenge, MemoryStorage, RateLimited, TokenBucketRateLimiter
 
-from captcha_demo.loop_bridge import BackgroundLoop, LoopBridgedStorage
+from captcha_demo.loop_bridge import BackgroundLoop, LoopBridgedRateLimiter, LoopBridgedStorage
+from tests.helpers import FrozenClock
 
 
 def make_challenge(challenge_id: str = "abc") -> Challenge:
@@ -48,3 +49,12 @@ def test_bridged_storage_round_trip() -> None:
     assert async_to_sync(storage.incr_attempts)("abc") == 1
     async_to_sync(storage.delete)("abc")
     assert async_to_sync(storage.get)("abc") is None
+
+
+def test_bridged_rate_limiter() -> None:
+    limiter = LoopBridgedRateLimiter(
+        TokenBucketRateLimiter(capacity=1, refill_rate=1, clock=FrozenClock(0.0))
+    )
+    async_to_sync(limiter.acquire)("1.2.3.4")
+    with pytest.raises(RateLimited):
+        async_to_sync(limiter.acquire)("1.2.3.4")

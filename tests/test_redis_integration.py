@@ -4,14 +4,15 @@ import os
 import subprocess
 import sys
 import textwrap
+import uuid
 
 import pytest
 from asgiref.sync import async_to_sync
-from captchakit import CaptchaManager, ImageRenderer, TextChallengeFactory
+from captchakit import CaptchaManager, ImageRenderer, RateLimited, TextChallengeFactory
 from captchakit.storage.redis import RedisStorage
 
-from captcha_demo.captcha import build_storage
-from captcha_demo.loop_bridge import LoopBridgedStorage
+from captcha_demo.captcha import build_backends
+from captcha_demo.loop_bridge import LoopBridgedRateLimiter, LoopBridgedStorage
 
 REDIS_URL = os.environ.get("TEST_REDIS_URL", "")
 
@@ -50,8 +51,23 @@ def test_plain_client_breaks_across_async_to_sync_calls() -> None:
     assert "Event loop is closed" in result.stdout
 
 
+def test_bridged_rate_limiter_works_across_calls() -> None:
+    storage, limiter = build_backends(REDIS_URL, capacity=2, refill_rate=0.001)
+    assert isinstance(storage, LoopBridgedStorage)
+    assert isinstance(storage.inner, RedisStorage)
+    assert isinstance(limiter, LoopBridgedRateLimiter)
+    key = f"test-{uuid.uuid4().hex}"
+    try:
+        async_to_sync(limiter.acquire)(key)
+        async_to_sync(limiter.acquire)(key)
+        with pytest.raises(RateLimited):
+            async_to_sync(limiter.acquire)(key)
+    finally:
+        async_to_sync(storage.loop.run)(storage.inner.client.aclose())
+
+
 def test_bridged_storage_works_across_calls() -> None:
-    storage = build_storage(REDIS_URL)
+    storage, _limiter = build_backends(REDIS_URL, capacity=5, refill_rate=1)
     assert isinstance(storage, LoopBridgedStorage)
     assert isinstance(storage.inner, RedisStorage)
     manager = CaptchaManager(

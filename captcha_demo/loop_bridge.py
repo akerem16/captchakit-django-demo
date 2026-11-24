@@ -5,8 +5,9 @@ Under WSGI (gunicorn sync workers) every such call creates a new event loop and 
 it afterwards. A ``redis.asyncio`` connection belongs to the loop it was opened on, so
 reusing the same client on the next call fails with ``RuntimeError: Event loop is closed``.
 
-:class:`LoopBridgedStorage` forwards every storage call to a single background loop, so
-the Redis client and its connection pool always live on the same loop.
+:class:`LoopBridgedStorage` and :class:`LoopBridgedRateLimiter` forward every call to a
+single background loop, so the Redis client and its connection pool always live on the
+same loop.
 """
 
 import asyncio
@@ -15,7 +16,7 @@ import threading
 from collections.abc import Coroutine
 from typing import Any
 
-from captchakit import Challenge, Storage
+from captchakit import Challenge, RateLimiter, Storage
 
 
 class BackgroundLoop:
@@ -59,3 +60,14 @@ class LoopBridgedStorage:
 
     async def incr_attempts(self, challenge_id: str) -> int:
         return await self.loop.run(self.inner.incr_attempts(challenge_id))
+
+
+class LoopBridgedRateLimiter:
+    """A captchakit ``RateLimiter`` that runs the wrapped limiter on a background loop."""
+
+    def __init__(self, inner: RateLimiter, loop: BackgroundLoop | None = None) -> None:
+        self.inner = inner
+        self.loop = loop or BackgroundLoop()
+
+    async def acquire(self, key: str) -> None:
+        await self.loop.run(self.inner.acquire(key))
