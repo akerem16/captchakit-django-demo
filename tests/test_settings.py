@@ -27,6 +27,13 @@ def test_debug_falls_back_to_dev_secret_key(reload_settings: pytest.MonkeyPatch)
     assert config_settings.SECRET_KEY.startswith("django-insecure-")
 
 
+def test_render_hostname_is_trusted(reload_settings: pytest.MonkeyPatch) -> None:
+    reload_settings.setenv("RENDER_EXTERNAL_HOSTNAME", "demo.onrender.com")
+    importlib.reload(config_settings)
+    assert "demo.onrender.com" in config_settings.ALLOWED_HOSTS
+    assert "https://demo.onrender.com" in config_settings.CSRF_TRUSTED_ORIGINS
+
+
 def test_env_list_and_bool(reload_settings: pytest.MonkeyPatch) -> None:
     reload_settings.setenv("DJANGO_ALLOWED_HOSTS", " a.example.com , b.example.com,")
     reload_settings.setenv("DJANGO_DEBUG", "YES")

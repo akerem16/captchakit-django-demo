@@ -138,4 +138,15 @@ The owner connects the Render account; give them click-by-click steps.
   (memory, or Redis sharing one client and one bridge loop). Client IP via DRF
   `get_ident()` with explicit `NUM_PROXIES` (`TRUSTED_PROXY_COUNT`). Swagger UI from
   `drf-spectacular-sidecar` (no CDN). CI fails on OpenAPI schema warnings.
+- **Session 4 — done** (PR `feat/deploy`). `/healthz` = first middleware (answers before
+  `ALLOWED_HOSTS` / HTTPS redirect), 200 or 503 with per-dependency status. Production
+  security settings; `check --deploy --fail-level WARNING` is clean in CI (W021 HSTS
+  preload silenced: no owned apex domain). `render.yaml` + `docs/deploy-render.md`.
+  Render facts checked in its docs (2026-11-25): uv used when `uv.lock` exists; default
+  Python 3.14 → `.python-version` = 3.12; `RENDER_EXTERNAL_HOSTNAME` set automatically;
+  health check 2xx/3xx within 5 s, Host = onrender.com name; Render's default
+  `GUNICORN_CMD_ARGS` has `--preload` (bridge loop starts lazily per worker, so fine).
+  **Not stated by Render docs:** X-Forwarded-For order / hop count → `TRUSTED_PROXY_COUNT=1`
+  is an assumption to verify after the first deploy. Render's generated secret is 44
+  chars; Django's W009 heuristic wants ≥ 50 (entropy is 256 bits, so it is safe).
 - Dev machine: Windows, no Docker/Redis. Docker and Redis are verified in CI only.

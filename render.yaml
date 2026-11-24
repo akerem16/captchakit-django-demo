@@ -1,0 +1,37 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# One free web service + one free Key Value (Redis-compatible) instance.
+services:
+  - type: web
+    name: captchakit-django-demo
+    runtime: python
+    plan: free
+    region: frankfurt
+    # Render installs uv because uv.lock is in the repo root; .python-version pins 3.12.
+    buildCommand: uv sync --locked --no-dev && .venv/bin/python manage.py collectstatic --noinput
+    startCommand: .venv/bin/python manage.py migrate --noinput && .venv/bin/gunicorn config.wsgi --workers 2 --bind 0.0.0.0:$PORT
+    healthCheckPath: /healthz
+    autoDeployTrigger: commit
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "false"
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: captchakit-demo-kv
+          property: connectionString
+      # Client IP for the API rate limit = last X-Forwarded-For entry (Render's proxy).
+      - key: TRUSTED_PROXY_COUNT
+        value: "1"
+      - key: CAPTCHA_TTL
+        value: "180"
+      - key: CAPTCHA_MAX_ATTEMPTS
+        value: "3"
+
+  - type: keyvalue
+    name: captchakit-demo-kv
+    plan: free
+    region: frankfurt
+    ipAllowList: [] # no access from the internet, only from Render services in the region
+    maxmemoryPolicy: allkeys-lru

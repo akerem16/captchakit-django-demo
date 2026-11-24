@@ -26,7 +26,11 @@ def build_backends(
     from captchakit.storage.redis import RedisStorage  # noqa: PLC0415
     from redis.asyncio import Redis  # noqa: PLC0415
 
-    client = Redis.from_url(redis_url)
+    # Short timeouts so /healthz fails fast; health_check_interval re-checks idle
+    # connections that the server may have closed.
+    client = Redis.from_url(
+        redis_url, socket_connect_timeout=2, socket_timeout=2, health_check_interval=30
+    )
     loop = BackgroundLoop()
     storage = LoopBridgedStorage(RedisStorage(client=client, prefix="captchakit"), loop)
     limiter = LoopBridgedRateLimiter(

@@ -8,6 +8,8 @@ from config.settings import *  # noqa: F403
 from config.settings import MIDDLEWARE, STORAGES
 
 REDIS_URL = ""
+# The test client speaks plain HTTP.
+SECURE_SSL_REDIRECT = False
 # WhiteNoise scans STATIC_ROOT at startup, which only exists after collectstatic.
 MIDDLEWARE = [m for m in MIDDLEWARE if not m.startswith("whitenoise.")]
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
