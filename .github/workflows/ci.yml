@@ -30,6 +30,12 @@ jobs:
         run: uv run python manage.py makemigrations --check --dry-run
         env:
           DJANGO_SECRET_KEY: ci-only-not-a-secret
+      - name: Production settings pass check --deploy
+        run: uv run python manage.py check --deploy --fail-level WARNING
+        env:
+          DJANGO_SECRET_KEY: ci-only-not-a-secret-but-long-enough-for-the-deploy-check-1234567890
+          DJANGO_DEBUG: "false"
+          DJANGO_ALLOWED_HOSTS: example.onrender.com
       - name: OpenAPI schema is valid and warning-free
         run: uv run python manage.py spectacular --validate --fail-on-warn --file /tmp/schema.yml
         env:
@@ -76,6 +82,7 @@ jobs:
             sleep 2
           done
           curl --fail --silent http://localhost:8000/ | grep captchakit
+          curl --fail --silent http://localhost:8000/healthz | grep '"redis": "ok"'
           # issue() and get() run in two async_to_sync loops: exercises the Redis loop bridge.
           for i in 1 2; do
             docker compose exec -T -e DJANGO_SETTINGS_MODULE=config.settings web python -c "
