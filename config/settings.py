@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "captcha_demo",
+    "accounts",
 ]
 
 MIDDLEWARE = [
@@ -76,6 +77,10 @@ DATABASES = {
         conn_max_age=600,
     ),
 }
+
+LOGIN_URL = "accounts:login"
+LOGIN_REDIRECT_URL = "accounts:me"
+LOGOUT_REDIRECT_URL = "home"
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},

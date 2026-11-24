@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Giriş · captchakit demo{% endblock %}
+
+{% block content %}
+<h1>Giriş</h1>
+<form method="post" class="card" novalidate>
+  {% include "_form.html" %}
+  <input type="hidden" name="next" value="{{ next }}">
+  <button type="submit">Giriş yap</button>
+</form>
+<p>Hesabınız yok mu? <a href="{% url 'accounts:register' %}">Kayıt olun</a>.</p>
+{% endblock %}
