@@ -67,3 +67,136 @@ code {
   margin: 0 auto;
   padding: 1.5rem 1rem 3rem;
 }
+
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.inline {
+  display: inline;
+  margin: 0;
+}
+
+.card {
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+label {
+  font-weight: 600;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  font: inherit;
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+}
+
+input:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.captcha-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+}
+
+button {
+  padding: 0.55rem 1.1rem;
+  font: inherit;
+  font-weight: 600;
+  color: #fff;
+  border: 0;
+  border-radius: 6px;
+  background: var(--accent);
+  cursor: pointer;
+}
+
+.link-button {
+  padding: 0;
+  font-weight: inherit;
+  color: var(--accent);
+  background: none;
+  text-decoration: underline;
+}
+
+.help {
+  color: var(--muted);
+}
+
+.help ul {
+  margin: 0.25rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.errors,
+.errors ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: #cf222e;
+}
+
+.has-error input {
+  border-color: #cf222e;
+}
+
+.message {
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  background: var(--surface);
+  border-left: 4px solid var(--accent);
+}
+
+.details {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.4rem 1rem;
+}
+
+.details dt {
+  font-weight: 600;
+}
+
+.details dd {
+  margin: 0;
+}
+
+pre {
+  overflow-x: auto;
+  padding: 0.75rem;
+  border-radius: 6px;
+  background: var(--surface);
+}

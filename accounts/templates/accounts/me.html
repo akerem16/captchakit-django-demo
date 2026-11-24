@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Profil · captchakit demo{% endblock %}
+
+{% block content %}
+<h1>Merhaba, {{ user.username }}</h1>
+<dl class="card details">
+  <dt>Kullanıcı adı</dt>
+  <dd>{{ user.username }}</dd>
+  <dt>Kayıt tarihi</dt>
+  <dd>{{ user.date_joined|date:"j F Y H:i" }}</dd>
+  <dt>Son giriş</dt>
+  <dd>{{ user.last_login|date:"j F Y H:i"|default:"—" }}</dd>
+</dl>
+<form method="post" action="{% url 'accounts:logout' %}">
+  {% csrf_token %}
+  <button type="submit">Çıkış yap</button>
+</form>
+{% endblock %}

@@ -8,6 +8,12 @@
   Kayıt ve giriş formları ile API uçları captcha ile korunur.
 </p>
 
+<h2>Formlar</h2>
+<p>
+  <a href="{% url 'accounts:register' %}">Kayıt olun</a> ya da
+  <a href="{% url 'accounts:login' %}">giriş yapın</a>: iki form da görseldeki karakterleri sorar.
+</p>
+
 <h2>Nasıl çalışır?</h2>
 <ol>
   <li>Sunucu bir captcha üretir ve kimliğini (id) formda gizli alan olarak gönderir.</li>
