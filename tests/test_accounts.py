@@ -47,6 +47,14 @@ def test_register_page_shows_captcha(client: Client) -> None:
     assert f'src="/captcha/{challenge_id}.png"' in html
 
 
+@pytest.mark.parametrize("url", [REGISTER_URL, LOGIN_URL])
+def test_captcha_label_points_at_answer_input(client: Client, url: str) -> None:
+    html = client.get(url).content.decode()
+    assert '<label for="id_captcha_1">' in html
+    assert 'id="id_captcha_1"' in html
+    assert 'for=""' not in html
+
+
 def test_register_with_correct_captcha_logs_in(client: Client) -> None:
     challenge_id, solution = fresh_captcha(client, REGISTER_URL)
     response = client.post(REGISTER_URL, register_data(challenge_id, solution))
