@@ -107,7 +107,7 @@ The owner connects the Render account; give them click-by-click steps.
 
 ## Status
 
-- **Session 1 — in progress.**
+- **Session 1 — done** (PR `feat/skeleton`).
   - captchakit: `CaptchaField` shared one challenge across all instances of a form class.
     Fixed in akerem16/captchakit#1 (merged, `40ca284`): challenge issued in `__deepcopy__`,
     lazily in `get_bound_field` for runtime fields, `bound_data` returns the fresh challenge.
@@ -161,6 +161,11 @@ The owner connects the Render account; give them click-by-click steps.
   `locale/tr/LC_MESSAGES/django.po` is written by hand and compiled with polib (no GNU gettext
   on the dev machine); CI runs `makemessages` and fails on untranslated strings. Light/dark
   CSS refresh, English screenshots.
+- **Polish** (2026-11-25): the captcha `<label>` points at the answer input
+  (`DemoCaptchaWidget.id_for_label`; Django's `MultiWidget` returns `""`, and captchakit's
+  widget has the same gap upstream). Site-styled `404.html` / `500.html` (500 is standalone:
+  Django renders it without a request context), SVG favicon, meta description. captchakit
+  v1.0.2 also has a GitHub Release now (its release workflow only publishes to PyPI).
 - Live on Render since 2026-11-25: https://captchakit-django-demo.onrender.com (owner
   connected the Blueprint).
 - Dev machine: Windows, no Docker/Redis. Docker and Redis are verified in CI only.

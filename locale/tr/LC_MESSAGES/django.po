@@ -182,3 +182,29 @@ msgstr "Katılma tarihi"
 
 msgid "Last login"
 msgstr "Son giriş"
+
+msgid ""
+"Django and Django REST Framework demo of captchakit: captcha-protected sign-up, "
+"login and token API."
+msgstr ""
+"captchakit için Django ve Django REST Framework demosu: captcha korumalı kayıt, "
+"giriş ve token API'si."
+
+msgid "Page not found"
+msgstr "Sayfa bulunamadı"
+
+msgid "The page you are looking for does not exist or has moved."
+msgstr "Aradığınız sayfa yok ya da taşınmış."
+
+msgid "Back to the home page"
+msgstr "Ana sayfaya dön"
+
+msgid "Server error"
+msgstr "Sunucu hatası"
+
+msgid "Something went wrong"
+msgstr "Bir şeyler ters gitti"
+
+msgid ""
+"The server could not complete your request. Please try again in a moment."
+msgstr "Sunucu isteğinizi tamamlayamadı. Lütfen biraz sonra tekrar deneyin."

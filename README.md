@@ -195,6 +195,8 @@ uv run python manage.py compilemessages
 | `DJANGO_DEBUG` | `false` | Development mode |
 | `DJANGO_ALLOWED_HOSTS` | `localhost,127.0.0.1` | Comma-separated; Render's host name is added automatically |
 | `CSRF_TRUSTED_ORIGINS` | none | Comma-separated origins with scheme |
+| `DJANGO_SECURE_SSL_REDIRECT` | `true` | Redirect HTTP to HTTPS (production only) |
+| `DJANGO_HSTS_SECONDS` | `31536000` | HSTS max-age in seconds (production only) |
 | `DATABASE_URL` | SQLite file | Any URL that dj-database-url understands |
 | `REDIS_URL` | none | Redis for captchas and rate limits; memory if unset |
 | `CAPTCHA_TTL` / `CAPTCHA_MAX_ATTEMPTS` | `180` / `3` | Captcha lifetime (s) and wrong answers allowed |
