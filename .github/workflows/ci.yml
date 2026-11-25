@@ -40,6 +40,19 @@ jobs:
         run: uv run python manage.py spectacular --validate --fail-on-warn --file /tmp/schema.yml
         env:
           DJANGO_SECRET_KEY: ci-only-not-a-secret
+      - name: Every UI string has a Turkish translation
+        run: |
+          command -v xgettext || (sudo apt-get update && sudo apt-get install -y gettext)
+          uv run python manage.py makemessages -l tr --no-location --no-obsolete
+          uv run --with polib python -c "
+          import polib, sys
+          po = polib.pofile('locale/tr/LC_MESSAGES/django.po')
+          missing = [e.msgid for e in po.untranslated_entries() + po.fuzzy_entries()]
+          print('\n'.join(missing))
+          sys.exit(1 if missing else 0)
+          "
+        env:
+          DJANGO_SECRET_KEY: ci-only-not-a-secret
       - name: Tests (coverage >= 85%)
         run: uv run pytest
 
