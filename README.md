@@ -9,12 +9,17 @@ It is deployed on Render's free tier with Redis (Render Key Value).
 **Live demo:** <https://captchakit-django-demo.onrender.com> (free tier: the first request
 after 15 idle minutes takes about a minute while the service wakes up)
 
-<img src="docs/images/register.png" alt="Registration form with a captcha image" width="420">
+<p>
+  <img src="docs/images/home.png" alt="Home page of the demo" width="58%">
+  <img src="docs/images/register.png" alt="Sign-up form with a captcha image" width="38%">
+</p>
 
 ## Features
 
-- **HTML pages** (Turkish UI): register, log in, log out (POST), profile. Each form shows
-  a captcha image and verifies the answer on the server.
+- **HTML pages**: sign up, log in, log out (POST), profile. Each form shows a captcha image
+  and verifies the answer on the server.
+- **English and Turkish**: English by default, an EN | TR switch in the header, and
+  `Accept-Language: tr` for Turkish API messages.
 - **REST API** with DRF: issue a captcha, register, get a token, read the current user.
   Captcha failures map to proper status codes: `400` wrong or missing, `404` unknown or
   already used, `410` expired, `429` attempts exhausted or rate limited (with `Retry-After`).
@@ -94,13 +99,18 @@ sequenceDiagram
   (`RuntimeError: Event loop is closed`, reproduced in CI against real Redis). All Redis
   calls therefore run on one long-lived loop per worker.
 - **One error mapping** ([`captcha_demo/errors.py`](captcha_demo/errors.py)): forms and
-  API use the same code, Turkish message and HTTP status for each captcha outcome.
+  API use the same code, translated message and HTTP status for each captcha outcome.
 - **Captcha first** ([`captcha_demo/drf.py`](captcha_demo/drf.py)): the DRF mixin verifies
   the captcha before any other field, so an unsolved request learns nothing (not even that
   a username is taken).
 - **No password oracle on login:** Django's `AuthenticationForm` checks the password even
   when another field failed. `LoginForm` skips that check while the captcha is wrong, so a
   bot cannot test passwords without solving captchas.
+- **Language choice** ([`captcha_demo/locale.py`](captcha_demo/locale.py)): Django's
+  `LocaleMiddleware` would follow the browser's `Accept-Language`, so a Turkish browser would
+  see Turkish first. A small middleware keeps HTML pages English until the visitor picks a
+  language (Django's `set_language` view stores it in a cookie); API clients may still use
+  `Accept-Language`. Translations live in `locale/tr/`, and CI fails if a string is missing.
 - **Rate limiter kept off the manager:** captchakit's form field issues challenges with
   `key="global"`, so a limiter on the manager would throttle every page view together. The
   API applies its own limiter per client IP.
@@ -166,6 +176,17 @@ uv run ruff check . && uv run ruff format --check . && uv run mypy && uv run pyt
 The Redis integration tests run only with a Redis server:
 `TEST_REDIS_URL=redis://localhost:6379/0 uv run pytest -m redis --no-cov`.
 
+### Translations
+
+UI strings are written in English and marked with `gettext` / `{% translate %}`. After
+changing them (requires GNU gettext):
+
+```bash
+uv run python manage.py makemessages -l tr --no-location
+# translate the new entries in locale/tr/LC_MESSAGES/django.po, then
+uv run python manage.py compilemessages
+```
+
 ## Configuration
 
 | Variable | Default | Meaning |
@@ -199,9 +220,10 @@ Free-tier caveats:
 config/          settings (from environment variables), urls, wsgi, asgi
 captcha_demo/    captcha manager, loop bridge, error mapping, form field, DRF mixin, /healthz
 accounts/        HTML forms and views, DRF API, templates
+locale/tr/       Turkish translations (.po source, compiled .mo)
 templates/       base layout and home page
 tests/           pytest suite (MemoryStorage) + Redis integration tests
-docs/            ADR-001, Render guide, screenshot
+docs/            ADR-001, Render guide, screenshots
 ```
 
 ## License
