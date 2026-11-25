@@ -111,8 +111,8 @@ The owner connects the Render account; give them click-by-click steps.
     Fixed in akerem16/captchakit#1 (merged, `40ca284`): challenge issued in `__deepcopy__`,
     lazily in `get_bound_field` for runtime fields, `bound_data` returns the fresh challenge.
     Also allowed Pillow 13 and refreshed vulnerable locked deps (pip-audit). Version 1.0.2
-    prepared; **owner tags `v1.0.2` to publish to PyPI**. Until then the demo pins captchakit
-    to the git commit via `[tool.uv.sources]`.
+    released to PyPI on 2026-11-25 (tag `v1.0.2`); the demo depends on
+    `captchakit>=1.0.2` from PyPI.
   - Demo skeleton (PR `feat/skeleton`): uv project, env-based settings, home page, captcha
     image route, Dockerfile + Compose (web + redis), CI (checks, Redis integration,
     compose smoke test).
@@ -153,9 +153,7 @@ The owner connects the Render account; give them click-by-click steps.
   screenshot `docs/images/register.png` taken with headless Edge, setup, config, Render
   notes), `docs/adr/001-redis.md`, LICENSE. captchakit README links the demo
   (akerem16/captchakit#2).
-- **Owner TODO:** (1) tag captchakit `v1.0.2` (`git tag v1.0.2 40ca284 && git push origin
-  v1.0.2`) — the agent was not permitted to publish; then switch the demo to the PyPI
-  release (drop `[tool.uv.sources]`, `uv lock`, remove `git` from the Dockerfile).
-  (2) Connect Render (docs/deploy-render.md) and confirm the live URL in README.
-  (3) After deploy, verify `TRUSTED_PROXY_COUNT=1` (rate limit per real client IP).
+- captchakit 1.0.2 is on PyPI (owner pushed the tag 2026-11-25); the demo uses it.
+- **Owner TODO:** (1) Connect Render (docs/deploy-render.md) and confirm the live URL in README.
+  (2) After deploy, verify `TRUSTED_PROXY_COUNT=1` (rate limit per real client IP).
 - Dev machine: Windows, no Docker/Redis. Docker and Redis are verified in CI only.
