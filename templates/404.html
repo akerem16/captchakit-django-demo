@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% translate "Page not found" %} · captchakit demo{% endblock %}
+{% block container_class %}container-narrow{% endblock %}
+
+{% block content %}
+<div class="status-page">
+  <p class="status-code">404</p>
+  <h1>{% translate "Page not found" %}</h1>
+  <p class="muted">{% translate "The page you are looking for does not exist or has moved." %}</p>
+  <a class="button" href="{% url 'home' %}">{% translate "Back to the home page" %}</a>
+</div>
+{% endblock %}
