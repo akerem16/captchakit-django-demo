@@ -178,7 +178,7 @@ The Redis integration tests run only with a Redis server:
 | `REDIS_URL` | none | Redis for captchas and rate limits; memory if unset |
 | `CAPTCHA_TTL` / `CAPTCHA_MAX_ATTEMPTS` | `180` / `3` | Captcha lifetime (s) and wrong answers allowed |
 | `CAPTCHA_RATE_CAPACITY` / `CAPTCHA_RATE_REFILL` | `5` / `0.2` | API rate limit: burst size, tokens per second |
-| `TRUSTED_PROXY_COUNT` | `0` | Reverse proxies in front of the app (Render: `1`) |
+| `TRUSTED_PROXY_COUNT` | `0` | Reverse proxies in front of the app (Render: `3`, Cloudflare + Render) |
 
 ## Deploy on Render
 

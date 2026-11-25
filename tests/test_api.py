@@ -68,6 +68,23 @@ def test_issue_captcha_is_rate_limited_per_ip(api: APIClient) -> None:
     assert other_ip.status_code == 201
 
 
+def test_rate_limit_key_behind_cloudflare_and_render(api: APIClient, settings: Any) -> None:
+    # The header chain measured on Render: "<client>, <Cloudflare edge>, <Render proxy>".
+    # The proxies change per request; the client (3rd from the right) does not.
+    settings.REST_FRAMEWORK = {**settings.REST_FRAMEWORK, "NUM_PROXIES": 3}
+    chains = [
+        "78.188.230.26, 172.70.247.236, 10.24.75.94",
+        "78.188.230.26, 104.23.180.220, 10.31.172.142",
+        "1.2.3.4, 78.188.230.26, 104.23.180.221, 10.31.172.143",  # client spoofs a prefix
+    ]
+    for i in range(5):
+        response = api.post("/api/captcha/", HTTP_X_FORWARDED_FOR=chains[i % 2])
+        assert response.status_code == 201
+    assert api.post("/api/captcha/", HTTP_X_FORWARDED_FOR=chains[2]).status_code == 429
+    other_client = "203.0.113.7, 172.70.247.236, 10.24.75.94"
+    assert api.post("/api/captcha/", HTTP_X_FORWARDED_FOR=other_client).status_code == 201
+
+
 def test_captcha_endpoint_is_post_only(api: APIClient) -> None:
     assert api.get("/api/captcha/").status_code == 405
 
