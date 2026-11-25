@@ -4,7 +4,7 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 from accounts import api
 from captcha_demo.captcha import manager
-from captcha_demo.views import home
+from captcha_demo.views import client_ip_debug, home
 
 urlpatterns = [
     path("", home, name="home"),
@@ -16,4 +16,5 @@ urlpatterns = [
     path("api/me/", api.MeView.as_view(), name="api-me"),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="api-docs"),
+    path("_diag/client-ip/", client_ip_debug),
 ]
