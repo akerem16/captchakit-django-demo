@@ -21,9 +21,10 @@ services:
           type: keyvalue
           name: captchakit-demo-kv
           property: connectionString
-      # Client IP for the API rate limit = last X-Forwarded-For entry (Render's proxy).
+      # Measured on Render (2026-11-25): X-Forwarded-For = "<client>, <Cloudflare edge>,
+      # <Render internal proxy>", so the client is the 3rd entry from the right.
       - key: TRUSTED_PROXY_COUNT
-        value: "1"
+        value: "3"
       - key: CAPTCHA_TTL
         value: "180"
       - key: CAPTCHA_MAX_ATTEMPTS

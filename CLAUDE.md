@@ -146,14 +146,15 @@ The owner connects the Render account; give them click-by-click steps.
   Python 3.14 → `.python-version` = 3.12; `RENDER_EXTERNAL_HOSTNAME` set automatically;
   health check 2xx/3xx within 5 s, Host = onrender.com name; Render's default
   `GUNICORN_CMD_ARGS` has `--preload` (bridge loop starts lazily per worker, so fine).
-  **Not stated by Render docs:** X-Forwarded-For order / hop count → `TRUSTED_PROXY_COUNT=1`
-  is an assumption to verify after the first deploy. Render's generated secret is 44
+  X-Forwarded-For on Render, measured live 2026-11-25: `<client>, <Cloudflare edge>,
+  <Render internal>` (REMOTE_ADDR is 127.0.0.1) → `TRUSTED_PROXY_COUNT=3`. The first guess
+  (1) picked the per-request internal IP, so the rate limit never triggered. Render's generated secret is 44
   chars; Django's W009 heuristic wants ≥ 50 (entropy is 256 bits, so it is safe).
 - **Session 5 — done** (PR `docs/readme`). README (mermaid architecture + API sequence,
   screenshot `docs/images/register.png` taken with headless Edge, setup, config, Render
   notes), `docs/adr/001-redis.md`, LICENSE. captchakit README links the demo
   (akerem16/captchakit#2).
 - captchakit 1.0.2 is on PyPI (owner pushed the tag 2026-11-25); the demo uses it.
-- **Owner TODO:** (1) Connect Render (docs/deploy-render.md) and confirm the live URL in README.
-  (2) After deploy, verify `TRUSTED_PROXY_COUNT=1` (rate limit per real client IP).
+- Live on Render since 2026-11-25: https://captchakit-django-demo.onrender.com (owner
+  connected the Blueprint).
 - Dev machine: Windows, no Docker/Redis. Docker and Redis are verified in CI only.
