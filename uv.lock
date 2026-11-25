@@ -23,9 +23,13 @@ wheels = [
 [[package]]
 name = "captchakit"
 version = "1.0.2"
-source = { git = "https://github.com/akerem16/captchakit?rev=40ca28497416f905fc1126119285850fb4cab4cc#40ca28497416f905fc1126119285850fb4cab4cc" }
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pillow" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d0/f8/80cef31121f9ecfb7377fe96b77a098a52fd041f1d05b88ef9f1a3d763d1/captchakit-1.0.2.tar.gz", hash = "sha256:3b2ed70807461a846bd9dbb2228db57248b1e6c9b96b7ffd6b4f01a87dce0600", size = 33402, upload-time = "2026-11-25T15:22:54.766Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ed/ff/4469a3f2def8e627a0e8b9181442bcf00c45149595fe34efef46e00e6303/captchakit-1.0.2-py3-none-any.whl", hash = "sha256:f03a3ecfde4f2a5baeaa9ceacb3901b7d390a1fbab925336e0e29d55b0023c0b", size = 41045, upload-time = "2026-11-25T15:22:53.787Z" },
 ]
 
 [package.optional-dependencies]
@@ -65,7 +69,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "captchakit", extras = ["django", "redis"], git = "https://github.com/akerem16/captchakit?rev=40ca28497416f905fc1126119285850fb4cab4cc" },
+    { name = "captchakit", extras = ["django", "redis"], specifier = ">=1.0.2" },
     { name = "dj-database-url", specifier = ">=2.3" },
     { name = "django", specifier = ">=5.2,<5.3" },
     { name = "djangorestframework", specifier = ">=3.16" },

@@ -31,10 +31,6 @@ dev = [
 [tool.uv]
 package = false
 
-[tool.uv.sources]
-# Pinned to the merge commit of akerem16/captchakit#1 until 1.0.2 is on PyPI.
-captchakit = { git = "https://github.com/akerem16/captchakit", rev = "40ca28497416f905fc1126119285850fb4cab4cc" }
-
 [tool.ruff]
 line-length = 100
 target-version = "py312"
