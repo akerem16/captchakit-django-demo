@@ -1,19 +1,21 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Profil · captchakit demo{% endblock %}
+{% block title %}{% translate "Profile" %} · captchakit demo{% endblock %}
+{% block container_class %}container-narrow{% endblock %}
 
 {% block content %}
-<h1>Merhaba, {{ user.username }}</h1>
+<h1>{% blocktranslate with name=user.username %}Hello, {{ name }}{% endblocktranslate %}</h1>
 <dl class="card details">
-  <dt>Kullanıcı adı</dt>
+  <dt>{% translate "Username" %}</dt>
   <dd>{{ user.username }}</dd>
-  <dt>Kayıt tarihi</dt>
-  <dd>{{ user.date_joined|date:"j F Y H:i" }}</dd>
-  <dt>Son giriş</dt>
-  <dd>{{ user.last_login|date:"j F Y H:i"|default:"—" }}</dd>
+  <dt>{% translate "Joined" %}</dt>
+  <dd>{{ user.date_joined|date:"DATETIME_FORMAT" }}</dd>
+  <dt>{% translate "Last login" %}</dt>
+  <dd>{{ user.last_login|date:"DATETIME_FORMAT"|default:"—" }}</dd>
 </dl>
 <form method="post" action="{% url 'accounts:logout' %}">
   {% csrf_token %}
-  <button type="submit">Çıkış yap</button>
+  <button type="submit" class="button-secondary">{% translate "Log out" %}</button>
 </form>
 {% endblock %}

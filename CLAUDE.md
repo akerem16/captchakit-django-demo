@@ -20,8 +20,8 @@ explainable. Deadline: **2026-12-06**.
 
 ## Working rules
 
-- Talk to the owner in **Turkish**, briefly (they read on a phone). UI text is Turkish; code,
-  commits, README and this file are English.
+- Talk to the owner in **Turkish**, briefly (they read on a phone). The UI is English by
+  default with a Turkish translation; code, commits, docs and this file are English.
 - Ask only when a decision is genuinely the owner's.
 - Start each session with a 3–5 bullet plan. End each session with a short Turkish
   "what we did and why" summary that explains the Django/DRF concepts used at interview level,
@@ -55,7 +55,8 @@ The DRF layer lives in `captcha_demo/drf.py` as a reusable serializer mixin/fiel
 captchakit errors to DRF errors and status codes. Keep it clean enough to move into captchakit
 later as `adapters/drf`, but do not add it to captchakit now.
 
-Out of scope: email verification, password reset, social login, React/Next.js, i18n.
+Out of scope: email verification, password reset, social login, React/Next.js.
+Languages: English (default) and Turkish only (added on 2026-11-25 at the owner's request).
 
 ## Stack
 
@@ -127,7 +128,7 @@ The owner connects the Render account; give them click-by-click steps.
     Redis, bridge works), Docker Compose smoke test.
 - **Session 2 — done** (PR `feat/accounts-pages`). `accounts` app: register / login /
   logout (POST) / profile. `captcha_demo/errors.py` is the single mapping captcha outcome →
-  code + Turkish message + HTTP status; `DemoCaptchaField` uses it. `LoginForm.clean()`
+  code + message + HTTP status; `DemoCaptchaField` uses it. `LoginForm.clean()`
   skips the password check when the captcha failed (no password oracle).
 - Rate limiting must NOT go on the manager: `CaptchaField` issues with `key="global"`, so
   every page view would share one bucket. The API applies a separate per-IP limiter.
@@ -151,10 +152,15 @@ The owner connects the Render account; give them click-by-click steps.
   (1) picked the per-request internal IP, so the rate limit never triggered. Render's generated secret is 44
   chars; Django's W009 heuristic wants ≥ 50 (entropy is 256 bits, so it is safe).
 - **Session 5 — done** (PR `docs/readme`). README (mermaid architecture + API sequence,
-  screenshot `docs/images/register.png` taken with headless Edge, setup, config, Render
+  screenshots in `docs/images/` taken with headless Edge, setup, config, Render
   notes), `docs/adr/001-redis.md`, LICENSE. captchakit README links the demo
   (akerem16/captchakit#2).
 - captchakit 1.0.2 is on PyPI (owner pushed the tag 2026-11-25); the demo uses it.
+- **i18n + visual polish** (PR `feat/i18n`, 2026-11-25): English default, EN | TR switch
+  (`set_language` cookie), `Accept-Language` honoured for `/api/` only (`captcha_demo/locale.py`).
+  `locale/tr/LC_MESSAGES/django.po` is written by hand and compiled with polib (no GNU gettext
+  on the dev machine); CI runs `makemessages` and fails on untranslated strings. Light/dark
+  CSS refresh, English screenshots.
 - Live on Render since 2026-11-25: https://captchakit-django-demo.onrender.com (owner
   connected the Blueprint).
 - Dev machine: Windows, no Docker/Redis. Docker and Redis are verified in CI only.

@@ -1,12 +1,16 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-{% block title %}Kayıt ol · captchakit demo{% endblock %}
+{% block title %}{% translate "Sign up" %} · captchakit demo{% endblock %}
+{% block container_class %}container-narrow{% endblock %}
 
 {% block content %}
-<h1>Kayıt ol</h1>
-<form method="post" class="card" novalidate>
+<h1>{% translate "Create an account" %}</h1>
+<form method="post" class="card form" novalidate>
   {% include "_form.html" %}
-  <button type="submit">Kayıt ol</button>
+  <button type="submit" class="button-block">{% translate "Sign up" %}</button>
 </form>
-<p>Hesabınız var mı? <a href="{% url 'accounts:login' %}">Giriş yapın</a>.</p>
+<p class="muted center">
+  {% translate "Already have an account?" %} <a href="{% url 'accounts:login' %}">{% translate "Log in" %}</a>
+</p>
 {% endblock %}

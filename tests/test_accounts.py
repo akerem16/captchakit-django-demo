@@ -53,7 +53,7 @@ def test_register_with_correct_captcha_logs_in(client: Client) -> None:
     assert response.status_code == 302
     assert response["Location"] == ME_URL
     assert User.objects.filter(username="ayse").exists()
-    assert "Merhaba, ayse" in client.get(ME_URL).content.decode()
+    assert "Hello, ayse" in client.get(ME_URL).content.decode()
 
 
 def test_register_answer_is_case_insensitive(client: Client) -> None:
@@ -66,27 +66,27 @@ def test_register_with_wrong_captcha(client: Client) -> None:
     challenge_id, _ = fresh_captcha(client, REGISTER_URL)
     response = client.post(REGISTER_URL, register_data(challenge_id, "yanlis"))
     assert response.status_code == 200
-    assert "Captcha cevabı yanlış." in response.content.decode()
+    assert "The captcha answer is wrong." in response.content.decode()
     assert not User.objects.exists()
 
 
 def test_register_with_empty_captcha(client: Client) -> None:
     challenge_id, _ = fresh_captcha(client, REGISTER_URL)
     response = client.post(REGISTER_URL, register_data(challenge_id, ""))
-    assert "Lütfen görseldeki karakterleri yazın." in response.content.decode()
+    assert "Please type the characters from the image." in response.content.decode()
     assert not User.objects.exists()
 
 
 def test_register_with_unknown_captcha(client: Client) -> None:
     response = client.post(REGISTER_URL, register_data("0" * 32, "ABCDE"))
-    assert "Captcha bulunamadı" in response.content.decode()
+    assert "does not exist or was already used" in response.content.decode()
 
 
 def test_register_with_expired_captcha(client: Client, monkeypatch: pytest.MonkeyPatch) -> None:
     challenge_id, solution = fresh_captcha(client, REGISTER_URL)
     monkeypatch.setattr(manager, "clock", FrozenClock(manager.clock.now() + manager.ttl + 1))
     response = client.post(REGISTER_URL, register_data(challenge_id, solution))
-    assert "süresi doldu" in response.content.decode()
+    assert "has expired" in response.content.decode()
     assert not User.objects.exists()
 
 
@@ -118,7 +118,7 @@ def test_captcha_cannot_be_reused(client: Client) -> None:
     challenge_id, solution = fresh_captcha(client, REGISTER_URL)
     assert client.post(REGISTER_URL, register_data(challenge_id, solution)).status_code == 302
     response = Client().post(REGISTER_URL, register_data(challenge_id, solution, "mehmet"))
-    assert "Captcha bulunamadı" in response.content.decode()
+    assert "does not exist or was already used" in response.content.decode()
     assert User.objects.count() == 1
 
 
@@ -127,7 +127,7 @@ def test_too_many_wrong_answers(client: Client) -> None:
     for _ in range(manager.max_attempts - 1):
         client.post(REGISTER_URL, register_data(challenge_id, "yanlis"))
     response = client.post(REGISTER_URL, register_data(challenge_id, "yanlis"))
-    assert "Çok fazla yanlış deneme" in response.content.decode()
+    assert "Too many wrong answers" in response.content.decode()
 
 
 def test_logged_in_user_is_redirected_from_register(client: Client, user: User) -> None:
@@ -149,14 +149,14 @@ def test_login_with_wrong_captcha(client: Client, user: User) -> None:
     challenge_id, _ = fresh_captcha(client, LOGIN_URL)
     response = client.post(LOGIN_URL, login_data(challenge_id, "yanlis"))
     assert response.status_code == 200
-    assert "Captcha cevabı yanlış." in response.content.decode()
+    assert "The captcha answer is wrong." in response.content.decode()
     assert "_auth_user_id" not in client.session
 
 
 def test_login_with_empty_captcha(client: Client, user: User) -> None:
     challenge_id, _ = fresh_captcha(client, LOGIN_URL)
     response = client.post(LOGIN_URL, login_data(challenge_id, ""))
-    assert "Lütfen görseldeki karakterleri yazın." in response.content.decode()
+    assert "Please type the characters from the image." in response.content.decode()
     assert "_auth_user_id" not in client.session
 
 

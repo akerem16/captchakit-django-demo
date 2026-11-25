@@ -1,46 +1,75 @@
 {% extends "base.html" %}
+{% load i18n %}
+
+{% block container_class %}container-wide{% endblock %}
 
 {% block content %}
-<h1>captchakit + Django demo</h1>
-<p>
-  Bu site, <a href="https://github.com/akerem16/captchakit">captchakit</a> kütüphanesinin
-  Django ve Django REST Framework ile nasıl kullanıldığını gösteren küçük bir örnek uygulamadır.
-  Kayıt ve giriş formları ile API uçları captcha ile korunur.
-</p>
+<section class="hero">
+  <p class="eyebrow">{% translate "Django + REST Framework demo" %}</p>
+  <h1>{% translate "Captcha-protected sign-up, login and API" %}</h1>
+  <p class="lead">
+    {% blocktranslate trimmed %}
+      This app shows how <a href="https://github.com/akerem16/captchakit">captchakit</a>, a small
+      async captcha library, protects Django forms and a REST API.
+    {% endblocktranslate %}
+  </p>
+  <div class="actions">
+    <a class="button" href="{% url 'accounts:register' %}">{% translate "Create an account" %}</a>
+    <a class="button button-secondary" href="{% url 'api-docs' %}">{% translate "Explore the API" %}</a>
+  </div>
+</section>
 
-<h2>Formlar</h2>
-<p>
-  <a href="{% url 'accounts:register' %}">Kayıt olun</a> ya da
-  <a href="{% url 'accounts:login' %}">giriş yapın</a>: iki form da görseldeki karakterleri sorar.
-</p>
+<section class="features" aria-label="{% translate 'Features' %}">
+  <article class="card">
+    <h2>{% translate "Forms" %}</h2>
+    <p>{% translate "Sign-up and login forms ask for the characters in an image and check the answer on the server." %}</p>
+  </article>
+  <article class="card">
+    <h2>{% translate "REST API" %}</h2>
+    <p>{% translate "Get a captcha, register and log in for a token. Errors use clear HTTP status codes." %}</p>
+  </article>
+  <article class="card">
+    <h2>{% translate "Production-ready" %}</h2>
+    <p>{% translate "Redis-backed, rate limited per IP, health-checked and deployed on Render." %}</p>
+  </article>
+</section>
 
-<h2>API</h2>
-<p>
-  Uçların tamamı <a href="{% url 'api-docs' %}">/api/docs/</a> adresindeki Swagger arayüzünde
-  denenebilir. Komut satırından:
-</p>
-<pre><code># 1) Captcha al (IP başına sınırlı)
+<section>
+  <h2>{% translate "How it works" %}</h2>
+  <ol class="steps">
+    <li>{% translate "The server creates a captcha and sends its id with the form." %}</li>
+    <li>{% blocktranslate trimmed %}The image is loaded from <code>/captcha/&lt;id&gt;.png</code>.{% endblocktranslate %}</li>
+    <li>{% translate "On submit the server checks the answer. Each captcha works only once." %}</li>
+  </ol>
+</section>
+
+<section>
+  <h2>{% translate "Try the API" %}</h2>
+  <p>
+    {% url 'api-docs' as docs_url %}
+    {% blocktranslate trimmed %}
+      Every endpoint can be tried in the <a href="{{ docs_url }}">interactive API docs</a>. From a terminal:
+    {% endblocktranslate %}
+  </p>
+<pre><code># 1) {% translate "Get a captcha (rate limited per IP)" %}
 curl -X POST {{ request.scheme }}://{{ request.get_host }}/api/captcha/
 # → {"id": "…", "image_url": "…/captcha/….png", "expires_in": 180}
 
-# 2) Görseldeki karakterlerle kayıt ol
+# 2) {% translate "Register with the characters from the image" %}
 curl -X POST {{ request.scheme }}://{{ request.get_host }}/api/register/ \
   -H "Content-Type: application/json" \
   -d '{"username": "ayse", "password": "…", "captcha_id": "…", "captcha_answer": "…"}'
 
-# 3) Yeni bir captcha ile token al, sonra profili oku
+# 3) {% translate "Log in with a new captcha, then read your profile" %}
 curl -X POST {{ request.scheme }}://{{ request.get_host }}/api/token/ -H "Content-Type: application/json" \
   -d '{"username": "ayse", "password": "…", "captcha_id": "…", "captcha_answer": "…"}'
 curl {{ request.scheme }}://{{ request.get_host }}/api/me/ -H "Authorization: Token …"</code></pre>
-<p>
-  Captcha hataları: <code>400</code> yanlış/boş, <code>404</code> bilinmeyen ya da kullanılmış,
-  <code>410</code> süresi dolmuş, <code>429</code> deneme hakkı bitti ya da çok fazla istek.
-</p>
-
-<h2>Nasıl çalışır?</h2>
-<ol>
-  <li>Sunucu bir captcha üretir ve kimliğini (id) formda gizli alan olarak gönderir.</li>
-  <li>Görsel <code>/captcha/&lt;id&gt;.png</code> adresinden yüklenir.</li>
-  <li>Form gönderilince cevap sunucuda doğrulanır; her captcha yalnızca bir kez kullanılabilir.</li>
-</ol>
+  <p class="muted">
+    {% blocktranslate trimmed %}
+      Captcha errors: <code>400</code> wrong or missing, <code>404</code> unknown or already used,
+      <code>410</code> expired, <code>429</code> too many attempts or requests.
+      Send <code>Accept-Language: tr</code> for Turkish messages.
+    {% endblocktranslate %}
+  </p>
+</section>
 {% endblock %}
