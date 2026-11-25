@@ -59,7 +59,7 @@ def test_issue_captcha_is_rate_limited_per_ip(api: APIClient) -> None:
     response = api.post("/api/captcha/")
     assert response.status_code == 429
     assert response.json() == {
-        "detail": "Çok fazla istek. Lütfen biraz sonra tekrar deneyin.",
+        "detail": "Too many requests. Please try again in a moment.",
         "code": "rate_limited",
     }
     assert response["Retry-After"] == "1"
@@ -171,7 +171,7 @@ def test_register_taken_username_400(api: APIClient) -> None:
     User.objects.create_user("Ayse", password=PASSWORD)
     response = register(api)
     assert response.status_code == 400
-    assert response.json() == {"username": ["Bu kullanıcı adı zaten alınmış."]}
+    assert response.json() == {"username": ["This username is already taken."]}
 
 
 def test_register_weak_password_400(api: APIClient) -> None:
@@ -219,7 +219,7 @@ def test_token_and_me(api: APIClient, user: User) -> None:
 def test_token_wrong_password_400(api: APIClient, user: User) -> None:
     response = token_request(api, password="hatali")
     assert response.status_code == 400
-    assert response.json() == {"non_field_errors": ["Kullanıcı adı veya şifre hatalı."]}
+    assert response.json() == {"non_field_errors": ["Wrong username or password."]}
 
 
 def test_token_wrong_captcha_400(api: APIClient, user: User) -> None:

@@ -1,0 +1,184 @@
+# Turkish translation of captchakit-django-demo.
+# Source language is English. Regenerate the template with
+#   python manage.py makemessages -l tr --no-location
+# and compile with `python manage.py compilemessages` (needs GNU gettext).
+msgid ""
+msgstr ""
+"Project-Id-Version: captchakit-django-demo\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Please type the characters from the image."
+msgstr "Lütfen görseldeki karakterleri yazın."
+
+msgid "The captcha answer is wrong."
+msgstr "Captcha cevabı yanlış."
+
+msgid "This captcha does not exist or was already used. Please try a new one."
+msgstr "Bu captcha bulunamadı ya da zaten kullanıldı. Lütfen yenisini deneyin."
+
+msgid "This captcha has expired. Please try a new one."
+msgstr "Bu captcha'nın süresi doldu. Lütfen yenisini deneyin."
+
+msgid "Too many wrong answers. Please try a new captcha."
+msgstr "Çok fazla yanlış deneme. Lütfen yeni bir captcha deneyin."
+
+msgid "Too many requests. Please try again in a moment."
+msgstr "Çok fazla istek. Lütfen biraz sonra tekrar deneyin."
+
+msgid "Verification"
+msgstr "Doğrulama"
+
+msgid "Type the characters in the image (not case-sensitive)."
+msgstr "Görseldeki karakterleri yazın (büyük/küçük harf fark etmez)."
+
+msgid "Your account is ready. Welcome!"
+msgstr "Hesabınız hazır. Hoş geldiniz!"
+
+msgid "This username is already taken."
+msgstr "Bu kullanıcı adı zaten alınmış."
+
+msgid "Wrong username or password."
+msgstr "Kullanıcı adı veya şifre hatalı."
+
+msgid "Main"
+msgstr "Ana menü"
+
+msgid "Log out"
+msgstr "Çıkış yap"
+
+msgid "Log in"
+msgstr "Giriş yap"
+
+msgid "Sign up"
+msgstr "Kayıt ol"
+
+msgid ""
+"Built with <a href=\"https://github.com/akerem16/captchakit\">captchakit</"
+"a>, Django and Django REST Framework."
+msgstr ""
+"<a href=\"https://github.com/akerem16/captchakit\">captchakit</a>, Django "
+"ve Django REST Framework ile yapıldı."
+
+msgid "Source code"
+msgstr "Kaynak kod"
+
+msgid "Django + REST Framework demo"
+msgstr "Django + REST Framework demosu"
+
+msgid "Captcha-protected sign-up, login and API"
+msgstr "Captcha korumalı kayıt, giriş ve API"
+
+msgid ""
+"This app shows how <a href=\"https://github.com/akerem16/captchakit"
+"\">captchakit</a>, a small async captcha library, protects Django forms and "
+"a REST API."
+msgstr ""
+"Bu uygulama, küçük bir async captcha kütüphanesi olan <a href=\"https://"
+"github.com/akerem16/captchakit\">captchakit</a>'in Django formlarını ve bir "
+"REST API'yi nasıl koruduğunu gösterir."
+
+msgid "Create an account"
+msgstr "Hesap oluştur"
+
+msgid "Explore the API"
+msgstr "API'yi keşfet"
+
+msgid "Features"
+msgstr "Özellikler"
+
+msgid "Forms"
+msgstr "Formlar"
+
+msgid ""
+"Sign-up and login forms ask for the characters in an image and check the "
+"answer on the server."
+msgstr ""
+"Kayıt ve giriş formları görseldeki karakterleri sorar ve cevabı sunucuda "
+"doğrular."
+
+msgid "REST API"
+msgstr "REST API"
+
+msgid ""
+"Get a captcha, register and log in for a token. Errors use clear HTTP status "
+"codes."
+msgstr ""
+"Captcha alın, kayıt olun ve token ile giriş yapın. Hatalar anlaşılır HTTP "
+"durum kodlarıyla döner."
+
+msgid "Production-ready"
+msgstr "Yayına hazır"
+
+msgid "Redis-backed, rate limited per IP, health-checked and deployed on Render."
+msgstr "Redis destekli, IP başına sınırlı, sağlık kontrollü ve Render'da yayında."
+
+msgid "How it works"
+msgstr "Nasıl çalışır?"
+
+msgid "The server creates a captcha and sends its id with the form."
+msgstr "Sunucu bir captcha üretir ve kimliğini formla birlikte gönderir."
+
+msgid "The image is loaded from <code>/captcha/&lt;id&gt;.png</code>."
+msgstr "Görsel <code>/captcha/&lt;id&gt;.png</code> adresinden yüklenir."
+
+msgid "On submit the server checks the answer. Each captcha works only once."
+msgstr ""
+"Form gönderilince sunucu cevabı doğrular. Her captcha yalnızca bir kez "
+"kullanılabilir."
+
+msgid "Try the API"
+msgstr "API'yi deneyin"
+
+#, python-format
+msgid ""
+"Every endpoint can be tried in the <a href=\"%(docs_url)s\">interactive API "
+"docs</a>. From a terminal:"
+msgstr ""
+"Tüm uçlar <a href=\"%(docs_url)s\">etkileşimli API dokümanında</a> "
+"denenebilir. Komut satırından:"
+
+msgid "Get a captcha (rate limited per IP)"
+msgstr "Captcha alın (IP başına sınırlı)"
+
+msgid "Register with the characters from the image"
+msgstr "Görseldeki karakterlerle kayıt olun"
+
+msgid "Log in with a new captcha, then read your profile"
+msgstr "Yeni bir captcha ile giriş yapın, sonra profilinizi okuyun"
+
+msgid ""
+"Captcha errors: <code>400</code> wrong or missing, <code>404</code> unknown "
+"or already used, <code>410</code> expired, <code>429</code> too many "
+"attempts or requests. Send <code>Accept-Language: tr</code> for Turkish "
+"messages."
+msgstr ""
+"Captcha hataları: <code>400</code> yanlış ya da boş, <code>404</code> "
+"bilinmeyen ya da kullanılmış, <code>410</code> süresi dolmuş, <code>429</"
+"code> çok fazla deneme ya da istek. Türkçe mesajlar için <code>Accept-"
+"Language: tr</code> gönderin."
+
+msgid "Already have an account?"
+msgstr "Hesabınız var mı?"
+
+msgid "No account yet?"
+msgstr "Hesabınız yok mu?"
+
+msgid "Profile"
+msgstr "Profil"
+
+#, python-format
+msgid "Hello, %(name)s"
+msgstr "Merhaba, %(name)s"
+
+msgid "Username"
+msgstr "Kullanıcı adı"
+
+msgid "Joined"
+msgstr "Katılma tarihi"
+
+msgid "Last login"
+msgstr "Son giriş"

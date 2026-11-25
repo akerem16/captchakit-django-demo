@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, password_validation
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import generics, serializers, status
 from rest_framework.authtoken.models import Token
@@ -45,7 +46,7 @@ class RegisterSerializer(CaptchaSerializerMixin, serializers.ModelSerializer):  
 
     def validate_username(self, value: str) -> str:
         if User.objects.filter(username__iexact=value).exists():
-            raise serializers.ValidationError("Bu kullanıcı adı zaten alınmış.")
+            raise serializers.ValidationError(_("This username is already taken."))
         return value
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
@@ -76,7 +77,7 @@ class TokenRequestSerializer(CaptchaSerializerMixin, serializers.Serializer):  #
         )
         if user is None:
             raise serializers.ValidationError(
-                "Kullanıcı adı veya şifre hatalı.", code="authorization"
+                _("Wrong username or password."), code="authorization"
             )
         attrs["user"] = user
         return attrs

@@ -3,19 +3,18 @@ from typing import Any
 from captchakit import CaptchaManager
 from captchakit.adapters.django import CaptchaField
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 from captcha_demo.captcha import manager as default_manager
 from captcha_demo.errors import check_answer
 
 
 class DemoCaptchaField(CaptchaField):
-    """captchakit's ``CaptchaField`` with Turkish messages and stable error codes."""
+    """captchakit's ``CaptchaField`` with translated messages and stable error codes."""
 
     def __init__(self, manager: CaptchaManager = default_manager, **kwargs: Any) -> None:
-        kwargs.setdefault("label", "Doğrulama")
-        kwargs.setdefault(
-            "help_text", "Görseldeki karakterleri yazın (büyük/küçük harf fark etmez)."
-        )
+        kwargs.setdefault("label", _("Verification"))
+        kwargs.setdefault("help_text", _("Type the characters in the image (not case-sensitive)."))
         super().__init__(manager=manager, **kwargs)
         self.manager = manager
         answer_input = self.widget.widgets[1]

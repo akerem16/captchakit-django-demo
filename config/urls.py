@@ -9,6 +9,7 @@ from captcha_demo.views import home
 urlpatterns = [
     path("", home, name="home"),
     path("accounts/", include("accounts.urls")),
+    path("i18n/", include("django.conf.urls.i18n")),
     path("captcha/<str:challenge_id>.png", captcha_image_view(manager), name="captcha-image"),
     path("api/captcha/", api.CaptchaCreateView.as_view(), name="api-captcha"),
     path("api/register/", api.RegisterView.as_view(), name="api-register"),

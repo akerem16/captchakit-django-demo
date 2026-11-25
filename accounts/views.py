@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
+from django.utils.translation import gettext as _
 from django.views.decorators.http import require_http_methods
 
 from accounts.forms import LoginForm, RegisterForm
@@ -17,7 +18,7 @@ def register(request: HttpRequest) -> HttpResponse:
     if form.is_valid():
         user = form.save()
         login(request, user)
-        messages.success(request, "Kaydınız tamamlandı, hoş geldiniz!")
+        messages.success(request, _("Your account is ready. Welcome!"))
         return redirect("accounts:me")
     return render(request, "accounts/register.html", {"form": form})
 

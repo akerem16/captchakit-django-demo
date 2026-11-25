@@ -1,11 +1,13 @@
-"""One place that maps captcha outcomes to a code, a Turkish message and an HTTP status.
+"""One place that maps captcha outcomes to a code, a translated message and an HTTP status.
 
 Both the HTML form field and the DRF serializer use it, so a wrong, unknown, expired or
-exhausted captcha reads the same everywhere.
+exhausted captcha reads the same everywhere. Messages are lazy: they are translated into
+the language of the request when they are rendered.
 """
 
 from dataclasses import dataclass
 from http import HTTPStatus
+from typing import TYPE_CHECKING
 
 from asgiref.sync import async_to_sync
 from captchakit import (
@@ -16,35 +18,39 @@ from captchakit import (
     RateLimited,
     TooManyAttempts,
 )
+from django.utils.translation import gettext_lazy as _
+
+if TYPE_CHECKING:
+    from django_stubs_ext import StrOrPromise
 
 
 @dataclass(frozen=True, slots=True)
 class CaptchaFailure:
     code: str
-    message: str
+    message: "StrOrPromise"
     status: HTTPStatus
 
 
 REQUIRED = CaptchaFailure(
-    "captcha_required", "Lütfen görseldeki karakterleri yazın.", HTTPStatus.BAD_REQUEST
+    "captcha_required", _("Please type the characters from the image."), HTTPStatus.BAD_REQUEST
 )
-WRONG = CaptchaFailure("captcha_invalid", "Captcha cevabı yanlış.", HTTPStatus.BAD_REQUEST)
+WRONG = CaptchaFailure("captcha_invalid", _("The captcha answer is wrong."), HTTPStatus.BAD_REQUEST)
 NOT_FOUND = CaptchaFailure(
     "captcha_not_found",
-    "Captcha bulunamadı ya da zaten kullanıldı. Lütfen yenisini deneyin.",
+    _("This captcha does not exist or was already used. Please try a new one."),
     HTTPStatus.NOT_FOUND,
 )
 EXPIRED = CaptchaFailure(
-    "captcha_expired", "Captcha'nın süresi doldu. Lütfen yenisini deneyin.", HTTPStatus.GONE
+    "captcha_expired", _("This captcha has expired. Please try a new one."), HTTPStatus.GONE
 )
 TOO_MANY_ATTEMPTS = CaptchaFailure(
     "captcha_too_many_attempts",
-    "Çok fazla yanlış deneme. Lütfen yeni bir captcha deneyin.",
+    _("Too many wrong answers. Please try a new captcha."),
     HTTPStatus.TOO_MANY_REQUESTS,
 )
 RATE_LIMITED = CaptchaFailure(
     "rate_limited",
-    "Çok fazla istek. Lütfen biraz sonra tekrar deneyin.",
+    _("Too many requests. Please try again in a moment."),
     HTTPStatus.TOO_MANY_REQUESTS,
 )
 
